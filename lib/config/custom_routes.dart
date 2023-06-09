@@ -13,7 +13,10 @@ class AppRpute {
         return MaterialPageRoute(builder: (_) => const SplashScreen());
 
       case OnboardingScreen.id:
-        return MaterialPageRoute(builder: (_) => const OnboardingScreen());
+        return MaterialPageRoute(builder: (_) => OnboardingScreen());
+
+      case GetStartedScreen.id:
+        return MaterialPageRoute(builder: (_) => const GetStartedScreen());
 
       default:
         return MaterialPageRoute(

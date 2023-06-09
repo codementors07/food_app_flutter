@@ -6,9 +6,11 @@ class LogoWidget extends StatelessWidget {
   const LogoWidget({
     super.key,
     this.color,
+    this.fontSize,
   });
 
   final Color? color;
+  final double? fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -17,13 +19,13 @@ class LogoWidget extends StatelessWidget {
       TextSpan(
           text: 'Food-'.toUpperCase(),
           style: CustomStyles.customTextStyle(
-              fontSize: 36,
+              fontSize: fontSize ?? 36,
               fontColor: color ?? AppColors.lightBlack,
               fontWeight: FontWeight.w400)),
       TextSpan(
           text: 'E'.toUpperCase(),
           style: CustomStyles.customTextStyle(
-              fontSize: 36,
+              fontSize: fontSize ?? 36,
               fontColor: AppColors.primaryColor,
               fontWeight: FontWeight.w400))
     ]));

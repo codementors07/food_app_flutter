@@ -21,28 +21,6 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
         body: Column(
       children: [
-        const Text('data'),
-        const Text('data'),
-        const Text('data'),
-        const Text('data'),
-        const Text('data'),
-        const Text('data'),
-        const Text('data'),
-        const Text('data'),
-        const Text('data'),
-        const Text('data'),
-        const Text('data'),
-        const Text('data'),
-        const Text('data'),
-        const Text('data'),
-        const Text('data'),
-        const Text('data'),
-        const Text('data'),
-        const Text('data'),
-        const Text('data'),
-        const Text('data'),
-        const Text('data'),
-        const Text('data'),
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 10),
           width: double.infinity,
