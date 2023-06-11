@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_flutter/screens/export_screens.dart';
 
 import '../../component/export_component.dart';
 import '../../config/export_config.dart';
@@ -51,7 +52,12 @@ class GetStartedScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    CustomButton(btnText: 'Login'.toUpperCase()),
+                    CustomButton(
+                        onPress: () {
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, BasePage.id, (route) => false);
+                        },
+                        btnText: 'Login'.toUpperCase()),
                     const SizedBox(
                       height: 20,
                     ),
