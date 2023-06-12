@@ -26,6 +26,8 @@ class AssetPath {
   static const String mcdonald = '${mainImagePath}mcdonald.png';
   static const String burgerKing = '${mainImagePath}burgerKing.png';
   static const String domino = '${mainImagePath}domino.png';
+  static const String restaurant = '${mainImagePath}restaurant.png';
+  static const String subway = '${mainImagePath}subway.png';
 
   //Nav_Bar_Icons
   static const String home = '${mainIconPath}home.svg';

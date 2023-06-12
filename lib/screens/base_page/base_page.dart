@@ -41,12 +41,12 @@ class _BasePageState extends State<BasePage> {
             initialIndex = value;
           });
         },
-        screens: const [
+        screens: [
           HomePage(),
-          SearchPage(),
-          FavPage(),
-          CartPage(),
-          ProfilePage()
+          const SearchPage(),
+          const FavPage(),
+          const CartPage(),
+          const ProfilePage()
         ],
         navBarStyle: NavBarStyle.style5,
         items: [
