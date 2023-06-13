@@ -3,12 +3,14 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:food_flutter/feature/export_feature.dart';
+import 'package:provider/provider.dart';
 
 import '../component/export_component.dart';
 import '../config/export_config.dart';
+import '../controller/export_controller.dart';
 import '../model/export_model.dart';
 
-class FoodDetail extends StatefulWidget {
+class FoodDetail extends StatelessWidget {
   const FoodDetail({super.key, required this.foodModel});
 
   static const String id = 'foodDetailId';
@@ -16,14 +18,9 @@ class FoodDetail extends StatefulWidget {
   final FoodModel foodModel;
 
   @override
-  State<FoodDetail> createState() => _FoodDetailState();
-}
-
-class _FoodDetailState extends State<FoodDetail> {
-  int carouselIndex = 0;
-
-  @override
   Widget build(BuildContext context) {
+    //initialized provider in this page only .
+
     return Scaffold(
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -32,139 +29,45 @@ class _FoodDetailState extends State<FoodDetail> {
           color: AppColors.lightPrimaryColor,
         ),
       ),
-      body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        carouselSlider(),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              //food details
-              FoodDetailsHeader(foodModel: widget.foodModel),
+      body: Consumer<FoodDetailProvider>(builder: (context, detailProv, child) {
+        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          carouselSlider(detailProv),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                //food details
+                FoodDetailsHeader(foodModel: foodModel),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Quantity'.toUpperCase(),
-                        style: CustomStyles.customTextStyle(
-                            fontSize: 12,
-                            fontColor: AppColors.primaryColor,
-                            // fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 2.25,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 7.5),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: AppColors.lightGray,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              widget.foodModel.quanitiy.toString(),
-                              style: CustomStyles.customTextStyle(
-                                  fontSize: 14,
-                                  fontColor: AppColors.lightBlack,
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w400),
-                            ),
-                            Wrap(
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      if (widget.foodModel.quanitiy > 1) {
-                                        widget.foodModel.quanitiy--;
-                                      }
-                                    });
-                                  },
-                                  child: const Icon(
-                                    Icons.remove,
-                                    color: AppColors.primaryColor,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 9,
-                                ),
-                                InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        widget.foodModel.quanitiy++;
-                                      });
-                                    },
-                                    child: const Icon(Icons.add,
-                                        color: AppColors.primaryColor))
-                              ],
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Subtotal'.toUpperCase(),
-                        style: CustomStyles.customTextStyle(
-                            fontSize: 12,
-                            fontColor: AppColors.lightBlack,
-                            // fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        'Rs ${widget.foodModel.discountedPrice}',
-                        style: CustomStyles.customTextStyle(
-                            fontSize: 24,
-                            fontColor: AppColors.lightPrimaryColor,
-                            fontWeight: FontWeight.w400),
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ],
+                //quantity and price
+                quantityAndPrice(detailProv, context)
+              ],
+            ),
           ),
-        ),
-      ]),
+        ]);
+      }),
     );
   }
 
-  Widget carouselSlider() {
+  Widget carouselSlider(FoodDetailProvider detailProv) {
     return Stack(
       alignment: AlignmentDirectional.bottomCenter,
       children: [
         CarouselSlider.builder(
-          itemCount: widget.foodModel.foodImage.length,
+          itemCount: foodModel.foodImage.length,
           itemBuilder: (context, index, i) {
             return Image.asset(
-              widget.foodModel.foodImage[index],
+              foodModel.foodImage[index],
               fit: BoxFit.cover,
               width: MediaQuery.of(context).size.width,
             );
           },
           options: CarouselOptions(
               aspectRatio: 1.25,
-              initialPage: carouselIndex,
+              initialPage: detailProv.carouselIndex,
               onPageChanged: (value, reason) {
-                setState(() {
-                  carouselIndex = value;
-                });
+                detailProv.changeCarouselIndex(value);
               },
               viewportFraction: 1.1,
               enlargeCenterPage: true,
@@ -174,8 +77,8 @@ class _FoodDetailState extends State<FoodDetail> {
         Positioned(
           bottom: 25,
           child: CarouselIndicator(
-            count: widget.foodModel.foodImage.length,
-            index: carouselIndex,
+            count: foodModel.foodImage.length,
+            index: detailProv.carouselIndex,
             activeColor: AppColors.primaryColor,
             color: AppColors.white,
             height: 4,
@@ -183,6 +86,101 @@ class _FoodDetailState extends State<FoodDetail> {
             cornerRadius: 2,
           ),
         )
+      ],
+    );
+  }
+
+  Widget quantityAndPrice(FoodDetailProvider detailProv, BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Quantity'.toUpperCase(),
+              style: CustomStyles.customTextStyle(
+                  fontSize: 12,
+                  fontColor: AppColors.primaryColor,
+                  // fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w400),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width / 2.25,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 7.5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: AppColors.lightGray,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    detailProv.quantity.toString(),
+                    style: CustomStyles.customTextStyle(
+                        fontSize: 14,
+                        fontColor: AppColors.lightBlack,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400),
+                  ),
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          if (detailProv.quantity > 1) {
+                            detailProv.decreaseQuantity();
+                          }
+                        },
+                        child: const Icon(
+                          Icons.remove,
+                          color: AppColors.primaryColor,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 9,
+                      ),
+                      InkWell(
+                          onTap: () {
+                            detailProv.increaseQuantity();
+                          },
+                          child: const Icon(Icons.add,
+                              color: AppColors.primaryColor))
+                    ],
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              'Subtotal'.toUpperCase(),
+              style: CustomStyles.customTextStyle(
+                  fontSize: 12,
+                  fontColor: AppColors.lightBlack,
+                  // fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w400),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              'Rs ${foodModel.discountedPrice}',
+              style: CustomStyles.customTextStyle(
+                  fontSize: 24,
+                  fontColor: AppColors.lightPrimaryColor,
+                  fontWeight: FontWeight.w400),
+            )
+          ],
+        ),
       ],
     );
   }
