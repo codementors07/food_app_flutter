@@ -1,9 +1,10 @@
 import 'package:carousel_indicator/carousel_indicator.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:food_flutter/component/export_component.dart';
-import 'package:intl/intl.dart';
 
+import 'package:food_flutter/feature/export_feature.dart';
+
+import '../component/export_component.dart';
 import '../config/export_config.dart';
 import '../model/export_model.dart';
 
@@ -24,6 +25,13 @@ class _FoodDetailState extends State<FoodDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: CustomButton(
+          btnText: 'Add to basket'.toUpperCase(),
+          color: AppColors.lightPrimaryColor,
+        ),
+      ),
       body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         carouselSlider(),
         Padding(
@@ -31,68 +39,9 @@ class _FoodDetailState extends State<FoodDetail> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    widget.foodModel.foodName,
-                    style: CustomStyles.customTextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontColor: AppColors.lightBlack,
-                        fontSize: 36),
-                  ),
-                  const Icon(
-                    Icons.watch_later_outlined,
-                    color: AppColors.secondaryColor,
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 4,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'The Nautilus',
-                    style: CustomStyles.customTextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontColor: AppColors.secondaryColor,
-                        fontSize: 14,
-                        fontFamily: 'Poppins'),
-                  ),
-                  Text(
-                    '${DateFormat('mm').format(widget.foodModel.deliveryTime)} mins',
-                    style: CustomStyles.customTextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontColor: AppColors.secondaryColor,
-                        fontSize: 14,
-                        fontFamily: 'Poppins'),
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              HeaderTitle(
-                title: 'Description'.toUpperCase(),
-                showPadding: false,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                widget.foodModel.foodDescription,
-                style: CustomStyles.customTextStyle(
-                    fontSize: 14,
-                    fontColor: AppColors.gray,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.normal),
-              ),
-              const SizedBox(height: 40, width: 0),
+              //food details
+              FoodDetailsHeader(foodModel: widget.foodModel),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,7 +62,8 @@ class _FoodDetailState extends State<FoodDetail> {
                       ),
                       Container(
                         width: MediaQuery.of(context).size.width / 2.25,
-                        padding: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 7.5),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           color: AppColors.lightGray,
@@ -129,17 +79,33 @@ class _FoodDetailState extends State<FoodDetail> {
                                   fontFamily: 'Poppins',
                                   fontWeight: FontWeight.w400),
                             ),
-                            const Wrap(
+                            Wrap(
                               crossAxisAlignment: WrapCrossAlignment.center,
                               children: [
-                                Icon(
-                                  Icons.remove,
-                                  color: AppColors.primaryColor,
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      if (widget.foodModel.quanitiy > 1) {
+                                        widget.foodModel.quanitiy--;
+                                      }
+                                    });
+                                  },
+                                  child: const Icon(
+                                    Icons.remove,
+                                    color: AppColors.primaryColor,
+                                  ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 9,
                                 ),
-                                Icon(Icons.add, color: AppColors.primaryColor)
+                                InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        widget.foodModel.quanitiy++;
+                                      });
+                                    },
+                                    child: const Icon(Icons.add,
+                                        color: AppColors.primaryColor))
                               ],
                             )
                           ],
@@ -148,7 +114,7 @@ class _FoodDetailState extends State<FoodDetail> {
                     ],
                   ),
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
                         'Subtotal'.toUpperCase(),
@@ -158,10 +124,20 @@ class _FoodDetailState extends State<FoodDetail> {
                             // fontFamily: 'Poppins',
                             fontWeight: FontWeight.w400),
                       ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        'Rs ${widget.foodModel.discountedPrice}',
+                        style: CustomStyles.customTextStyle(
+                            fontSize: 24,
+                            fontColor: AppColors.lightPrimaryColor,
+                            fontWeight: FontWeight.w400),
+                      )
                     ],
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),

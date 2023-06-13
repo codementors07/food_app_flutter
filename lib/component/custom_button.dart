@@ -4,12 +4,17 @@ import '../config/export_config.dart';
 
 class CustomButton extends StatelessWidget {
   const CustomButton(
-      {Key? key, this.onPress, required this.btnText, this.showBorder = false})
+      {Key? key,
+      this.onPress,
+      required this.btnText,
+      this.color,
+      this.showBorder = false})
       : super(key: key);
 
   final Function()? onPress;
   final String btnText;
   final bool showBorder;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +22,8 @@ class CustomButton extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    showBorder ? AppColors.white : AppColors.primaryColor,
+                backgroundColor: color ??
+                    (showBorder ? AppColors.white : AppColors.primaryColor),
                 shape: RoundedRectangleBorder(
                     side: showBorder
                         ? const BorderSide(

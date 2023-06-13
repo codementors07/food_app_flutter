@@ -6,7 +6,7 @@ class FoodModel {
   final String foodDescription;
   final int mainPrice;
   final int discountedPrice;
-  final int quanitiy;
+  int quanitiy;
   final DateTime deliveryTime;
   final double rating;
 
