@@ -77,8 +77,10 @@ class FoodGridvieWidget extends StatelessWidget {
                               right: 10,
                               child: InkWell(
                                   onTap: () {
-                                    favProv.toggleFavorite(foodDatas.id);
+                                    favProv.toggleFavorite(
+                                        foodDatas.id, foodDatas);
                                     print(favProv.isFav);
+                                    print(favProv.favoriteList);
                                   },
                                   child: ContainerIcon(
                                       color: AppColors.gray.withOpacity(0.65),
