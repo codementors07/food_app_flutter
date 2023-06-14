@@ -34,8 +34,19 @@ class FavPage extends StatelessWidget {
                     child: ListView.separated(
                         itemCount: favProv.favoriteList.length,
                         separatorBuilder: (context, index) {
-                          return const SizedBox(
-                            height: 15,
+                          return const Column(
+                            children: [
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Divider(
+                                color: AppColors.lightGray,
+                                thickness: 2,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                            ],
                           );
                         },
                         itemBuilder: (context, index) {
