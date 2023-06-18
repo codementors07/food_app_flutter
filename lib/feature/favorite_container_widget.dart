@@ -4,6 +4,7 @@ import 'package:food_flutter/controller/providers/export_provider.dart';
 import '../component/export_component.dart';
 import '../config/export_config.dart';
 import '../model/export_model.dart';
+import 'export_feature.dart';
 
 class FavoriteContainerWidget extends StatelessWidget {
   const FavoriteContainerWidget({
@@ -68,6 +69,15 @@ class FavoriteContainerWidget extends StatelessWidget {
               InkWell(
                 onTap: () {
                   favProv.toggleFavorite(favDatas.id, favDatas);
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(FoodGridvieWidget.createSnackBar(
+                          content: 'Removed From Favorite',
+                          backgroundColor: AppColors.red,
+                          label: '',
+                          backgroundColorForaction: AppColors.red,
+                          onPress: () {
+                            // baseProv.changeNavBarPage(3);
+                          }));
                 },
                 child: const ContainerIcon(
                     color: AppColors.red,

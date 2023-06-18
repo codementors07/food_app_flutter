@@ -1,97 +1,84 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:food_flutter/controller/export_controller.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import 'package:provider/provider.dart';
 
 import '../../config/export_config.dart';
-import 'base_page_screens/cart_page.dart';
-import 'base_page_screens/fav_page.dart';
-import 'base_page_screens/home_page.dart';
-import 'base_page_screens/profile_page.dart';
-import 'base_page_screens/search_page.dart';
+import '../export_screens.dart';
 
-class BasePage extends StatefulWidget {
+class BasePage extends StatelessWidget {
   const BasePage({super.key});
 
   static const String id = 'basePage';
 
   @override
-  State<BasePage> createState() => _BasePageState();
-}
-
-class _BasePageState extends State<BasePage> {
-  int initialIndex = 0;
-
-  PersistentTabController persitentTabController = PersistentTabController();
-
-  @override
-  void initState() {
-    super.initState();
-    persitentTabController =
-        PersistentTabController(initialIndex: initialIndex);
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PersistentTabView(
-        context,
-        controller: persitentTabController,
-        onItemSelected: (value) {
-          setState(() {
-            initialIndex = value;
-          });
-        },
-        screens: const [
-          HomePage(),
-          SearchPage(),
-          FavPage(),
-          CartPage(),
-          ProfilePage()
-        ],
-        navBarStyle: NavBarStyle.style5,
-        items: [
-          PersistentBottomNavBarItem(
-            icon: SvgPicture.asset(
-              AssetPath.home,
-              color:
-                  initialIndex == 0 ? AppColors.primaryColor : AppColors.black,
+      body: Consumer<FoodDetailProvider>(builder: (context, baseProv, child) {
+        return PersistentTabView(
+          context,
+          controller: baseProv.persitentTabController,
+          onItemSelected: (value) {
+            baseProv.changeNavBarPage(value);
+          },
+          screens: [
+            const HomePage(),
+            const SearchPage(),
+            const FavPage(),
+            const CartPage(),
+            ProfilePage()
+          ],
+          navBarStyle: NavBarStyle.style5,
+          items: [
+            PersistentBottomNavBarItem(
+              icon: SvgPicture.asset(
+                AssetPath.home,
+                color: baseProv.navBarIndex == 0
+                    ? AppColors.primaryColor
+                    : AppColors.black,
+              ),
+              activeColorPrimary: AppColors.primaryColor,
             ),
-            activeColorPrimary: AppColors.primaryColor,
-          ),
-          PersistentBottomNavBarItem(
-            icon: SvgPicture.asset(
-              AssetPath.search,
-              color:
-                  initialIndex == 1 ? AppColors.primaryColor : AppColors.black,
+            PersistentBottomNavBarItem(
+              icon: SvgPicture.asset(
+                AssetPath.search,
+                color: baseProv.navBarIndex == 1
+                    ? AppColors.primaryColor
+                    : AppColors.black,
+              ),
+              activeColorPrimary: AppColors.primaryColor,
             ),
-            activeColorPrimary: AppColors.primaryColor,
-          ),
-          PersistentBottomNavBarItem(
-            icon: SvgPicture.asset(
-              AssetPath.fav,
-              color:
-                  initialIndex == 2 ? AppColors.primaryColor : AppColors.black,
+            PersistentBottomNavBarItem(
+              icon: SvgPicture.asset(
+                AssetPath.fav,
+                color: baseProv.navBarIndex == 2
+                    ? AppColors.primaryColor
+                    : AppColors.black,
+              ),
+              activeColorPrimary: AppColors.primaryColor,
             ),
-            activeColorPrimary: AppColors.primaryColor,
-          ),
-          PersistentBottomNavBarItem(
-            icon: SvgPicture.asset(
-              AssetPath.cart,
-              color:
-                  initialIndex == 3 ? AppColors.primaryColor : AppColors.black,
+            PersistentBottomNavBarItem(
+              icon: SvgPicture.asset(
+                AssetPath.cart,
+                color: baseProv.navBarIndex == 3
+                    ? AppColors.primaryColor
+                    : AppColors.black,
+              ),
+              activeColorPrimary: AppColors.primaryColor,
             ),
-            activeColorPrimary: AppColors.primaryColor,
-          ),
-          PersistentBottomNavBarItem(
-            icon: SvgPicture.asset(
-              AssetPath.profile,
-              color:
-                  initialIndex == 4 ? AppColors.primaryColor : AppColors.black,
+            PersistentBottomNavBarItem(
+              icon: SvgPicture.asset(
+                AssetPath.profile,
+                color: baseProv.navBarIndex == 4
+                    ? AppColors.primaryColor
+                    : AppColors.black,
+              ),
+              activeColorPrimary: AppColors.primaryColor,
             ),
-            activeColorPrimary: AppColors.primaryColor,
-          ),
-        ],
-      ),
+          ],
+        );
+      }),
     );
   }
 }

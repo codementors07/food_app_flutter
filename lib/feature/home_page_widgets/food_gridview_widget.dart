@@ -12,9 +12,33 @@ import '../../model/export_model.dart';
 class FoodGridvieWidget extends StatelessWidget {
   const FoodGridvieWidget({super.key});
 
+  static SnackBar createSnackBar(
+      {required String content,
+      required Color backgroundColor,
+      String? label,
+      Color? backgroundColorForaction,
+      Function()? onPress}) {
+    return SnackBar(
+      content: Text(
+        content,
+        style: const TextStyle(
+            fontFamily: 'Poppins', fontSize: 13, color: AppColors.white),
+      ),
+      backgroundColor: backgroundColor,
+      dismissDirection: DismissDirection.horizontal,
+      action: SnackBarAction(
+          label: label ?? 'Go to',
+          backgroundColor: backgroundColorForaction ?? Colors.blue,
+          onPressed: onPress ?? () {},
+          textColor: AppColors.white),
+      duration: const Duration(seconds: 2),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<CartAndFavProvider>(builder: (context, favProv, child) {
+    return Consumer2<CartAndFavProvider, FoodDetailProvider>(
+        builder: (context, favProv, baseProv, child) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -79,8 +103,15 @@ class FoodGridvieWidget extends StatelessWidget {
                                   onTap: () {
                                     favProv.toggleFavorite(
                                         foodDatas.id, foodDatas);
-                                    print(favProv.isFav);
-                                    print(favProv.favoriteList);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        createSnackBar(
+                                            content: 'Added to Favorite',
+                                            backgroundColor:
+                                                AppColors.primaryColor,
+                                            label: 'Go to Fav Page',
+                                            onPress: () {
+                                              baseProv.changeNavBarPage(2);
+                                            }));
                                   },
                                   child: ContainerIcon(
                                       color: AppColors.gray.withOpacity(0.65),
@@ -137,17 +168,32 @@ class FoodGridvieWidget extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-                                  Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 7.5, horizontal: 2.5),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: AppColors.lightPrimaryColor,
-                                      ),
-                                      child: SvgPicture.asset(
-                                        AssetPath.cart,
-                                        color: AppColors.white,
-                                      )),
+                                  InkWell(
+                                    onTap: () {
+                                      favProv.addToCart(foodDatas);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(createSnackBar(
+                                              content: 'Added to cart',
+                                              backgroundColor:
+                                                  AppColors.primaryColor,
+                                              label: 'Go to Cart',
+                                              onPress: () {
+                                                baseProv.changeNavBarPage(3);
+                                              }));
+                                    },
+                                    child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 7.5, horizontal: 2.5),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          color: AppColors.lightPrimaryColor,
+                                        ),
+                                        child: SvgPicture.asset(
+                                          AssetPath.cart,
+                                          color: AppColors.white,
+                                        )),
+                                  ),
                                 ],
                               )
                             ],

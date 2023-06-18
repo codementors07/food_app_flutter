@@ -3,14 +3,16 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:food_flutter/feature/export_feature.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../component/export_component.dart';
 import '../config/export_config.dart';
 import '../controller/export_controller.dart';
 import '../model/export_model.dart';
+import 'export_screens.dart';
 
-class FoodDetail extends StatelessWidget {
+class FoodDetail extends StatefulWidget {
   const FoodDetail({super.key, required this.foodModel});
 
   static const String id = 'foodDetailId';
@@ -18,36 +20,61 @@ class FoodDetail extends StatelessWidget {
   final FoodModel foodModel;
 
   @override
+  State<FoodDetail> createState() => _FoodDetailState();
+}
+
+class _FoodDetailState extends State<FoodDetail> {
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<FoodDetailProvider>(context, listen: false).quantity =
+        widget.foodModel.quantity;
+  }
+
+  @override
   Widget build(BuildContext context) {
     //initialized provider in this page only .
 
-    return Scaffold(
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: CustomButton(
-          btnText: 'Add to basket'.toUpperCase(),
-          color: AppColors.lightPrimaryColor,
-        ),
-      ),
-      body: Consumer<FoodDetailProvider>(builder: (context, detailProv, child) {
-        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          carouselSlider(detailProv),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                //food details
-                FoodDetailsHeader(foodModel: foodModel),
-
-                //quantity and price
-                quantityAndPrice(detailProv, context)
-              ],
+    return Consumer2<FoodDetailProvider, CartAndFavProvider>(
+        builder: (context, detailProv, cartProv, child) {
+      return Scaffold(
+          bottomNavigationBar: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: CustomButton(
+              onPress: () {
+                cartProv.addToCart(widget.foodModel);
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(FoodGridvieWidget.createSnackBar(
+                        content: 'Added to cart',
+                        backgroundColor: AppColors.primaryColor,
+                        label: 'Go to Cart',
+                        onPress: () {
+                          detailProv.changeNavBarPage(3).then((value) =>
+                              pushNewScreen(context,
+                                  screen: const BasePage(), withNavBar: false));
+                        }));
+              },
+              btnText: 'Add to basket'.toUpperCase(),
+              color: AppColors.lightPrimaryColor,
             ),
           ),
-        ]);
-      }),
-    );
+          body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            carouselSlider(detailProv),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  //food details
+                  FoodDetailsHeader(foodModel: widget.foodModel),
+
+                  //quantity and price
+                  quantityAndPrice(detailProv, context)
+                ],
+              ),
+            ),
+          ]));
+    });
   }
 
   Widget carouselSlider(FoodDetailProvider detailProv) {
@@ -55,10 +82,10 @@ class FoodDetail extends StatelessWidget {
       alignment: AlignmentDirectional.bottomCenter,
       children: [
         CarouselSlider.builder(
-          itemCount: foodModel.foodImage.length,
+          itemCount: widget.foodModel.foodImage.length,
           itemBuilder: (context, index, i) {
             return Image.asset(
-              foodModel.foodImage[index],
+              widget.foodModel.foodImage[index],
               fit: BoxFit.cover,
               width: MediaQuery.of(context).size.width,
             );
@@ -77,7 +104,7 @@ class FoodDetail extends StatelessWidget {
         Positioned(
           bottom: 25,
           child: CarouselIndicator(
-            count: foodModel.foodImage.length,
+            count: widget.foodModel.foodImage.length,
             index: detailProv.carouselIndex,
             activeColor: AppColors.primaryColor,
             color: AppColors.white,
@@ -173,7 +200,7 @@ class FoodDetail extends StatelessWidget {
               height: 10,
             ),
             Text(
-              'Rs ${foodModel.discountedPrice}',
+              'Rs ${widget.foodModel.discountedPrice}',
               style: CustomStyles.customTextStyle(
                   fontSize: 24,
                   fontColor: AppColors.lightPrimaryColor,

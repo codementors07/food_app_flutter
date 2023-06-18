@@ -6,6 +6,7 @@ class CartAndFavProvider extends ChangeNotifier {
   List<int> isFav = [];
 
   List<FoodModel> favoriteList = [];
+  List<FoodModel> cartList = [];
 
   bool containsData(int newValue) {
     return isFav.contains(newValue);
@@ -31,6 +32,16 @@ class CartAndFavProvider extends ChangeNotifier {
 
   removeFavorite(FoodModel model) {
     favoriteList.remove(model);
+    notifyListeners();
+  }
+
+  addToCart(FoodModel model) {
+    cartList.add(model);
+    notifyListeners();
+  }
+
+  removeCartData(int index) {
+    cartList.removeAt(index);
     notifyListeners();
   }
 }
